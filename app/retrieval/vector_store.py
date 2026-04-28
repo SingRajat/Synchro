@@ -1,9 +1,10 @@
 import os
 from dotenv import load_dotenv
-from config.settings import Chroma_Persist_dir
+from config.settings import Chroma_Persist_Dir
 from langchain_community.document_loaders import PyPDFLoader, WebBaseLoader
-from langchain_text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.retrievers import BM25Retriever
 from langchain_chroma import Chroma
 
 load_dotenv()
@@ -40,10 +41,14 @@ class RAG_Logic:
         )
         return self.db
 
-    def builder(self):
-        self.Load_Doc()
+    def builder(self, file_path):
+        self.Load_Doc(file_path)
         self.Split_Chunks()
-        return self.Vector_store()
+
+        bm25_retriever = BM25Retriever.from_documents(self.chunks)
+        bm25_retriever.k=3
+        
+        return self.Vector_store(),bm25_retriever
     
 
 
