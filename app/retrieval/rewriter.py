@@ -1,4 +1,10 @@
+from langchain_core.runnables import RunnableLambda
 from langchain_core.prompts import ChatPromptTemplate,MessagesPlaceholder
+from langchain_core.output_parsers import StrOutputParser
+
+parser=StrOutputParser()
+
+List_Parser=RunnableLambda(lambda x: [q.strip() for q in x.split("\n") if q.strip()])
 
 def Rewrite_chain(llm):
     Rewrite_prompt=ChatPromptTemplate.from_messages([
@@ -11,5 +17,5 @@ the most relevant document chunks for the LLM to answer with."""),
          ("user","{input}")
     ])
 
-    rewrite_chain=Rewrite_prompt|llm
+    rewrite_chain=Rewrite_prompt|llm| parser | List_Parser
     return rewrite_chain
