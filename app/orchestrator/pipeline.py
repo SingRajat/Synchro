@@ -7,8 +7,8 @@ from app.memory.chat_history import get_session_history
 from langchain_core.runnables import RunnableWithMessageHistory
 
 llm=Get_LLM()
-Vector_db=RAG_Logic().builder("AI Career Platform Research Plan.pdf")
-retrieve=Retriever(Vector_db)
+Vector_db,bm25_retriever=RAG_Logic().builder("AI Career Platform Research Plan.pdf")
+retrieve=Retriever(Vector_db,bm25_retriever)
 R_Chain=Rewrite_chain(llm)
 
 Prompt_chain=Prompt_builder(llm,retrieve,R_Chain)
